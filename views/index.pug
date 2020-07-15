@@ -41,17 +41,49 @@ append javascripts
 		var $text = $('#text');
 		var $allMessages = $('#allMessages');
 
+		var min = 1;
+		var max = 8;
+		var random = Math.floor(Math.random() * (max - min)) + min;
+
+		var alertClass;
+		switch (random) {
+			case 1:
+				alertClass = 'secondary';
+				break;
+			case 2:
+				alertClass = 'primary';
+				break;
+			case 3:
+				alertClass = 'success';
+				break;
+			case 4:
+				alertClass = 'success';
+				break;
+			case 5:
+				alertClass = 'warning';
+				break;
+			case 6:
+				alertClass = 'info';
+				break;
+			case 7:
+				alertClass = 'light';
+				break;
+			case 8:
+				alertClass = 'dark';
+				break;
+		};
+
 		$form.submit((event) => {
 			event.preventDefault();
 
-			socket.emit('sendMessage', {text: $text.val(), name: $name.val()});
+			socket.emit('sendMessage', {text: $text.val(), name: $name.val(), className: alertClass});
 
 			$text.val('');
 		});
 
 		socket.on('newMessage', (data) => {
 			$allMessages.append(`
-				<div class="alert alert-primary animate__animated  animate__rubberBand" role="alert">
+				<div class="alert alert-`+ data.className +` animate__animated  animate__rubberBand" role="alert">
 				<b>
 					`+ data.name +`
 				</b>:

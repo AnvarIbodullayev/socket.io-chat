@@ -23,7 +23,7 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('sendMessage', (data) => {
-		io.sockets.emit('newMessage', {msg: data.text, name: data.name});
+		io.sockets.emit('newMessage', {msg: data.text, name: data.name, className: data.className});
 	});
 });
 
