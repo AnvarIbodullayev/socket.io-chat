@@ -1,0 +1,67 @@
+extends layout
+
+block content
+	.container
+		h1.text-center.text-light.pt-5.pb-5
+			| Xat Yozing
+		form.needs-validation#form(novalidate='')
+			.form-row
+				.col-md-6.mb-3
+					label(for='name') First name
+					input#name.form-control(type='text', value='Marta', required='')
+					.valid-feedback
+						| Yaxshi
+					.invalid-feedback
+						| Ismingizni kiriting
+				.col-md-6.mb-3
+					div#allMessages.scroll
+						| Xatlar
+			.form-row
+				.col-md-6.mb-3
+					label(for='text') Xat yozing
+					textarea#text.form-control(type='text')
+					.invalid-feedback
+						| Biror narsa yozing
+
+			.form-group
+			button.btn.btn-danger#btn(type='submit') Submit form
+
+	div#online
+
+
+append javascripts
+	script(src='/javascripts/chat.js')
+	script(src='http://localhost:3000/socket.io/socket.io.js')
+	script.
+		const socket = io.connect('http://localhost:3000')
+		//- ozgaruvchilar
+		var $form = $('#form');
+		var $online = $('#online');
+		var $name = $('#name');
+		var $text = $('#text');
+		var $allMessages = $('#allMessages');
+
+		$form.submit((event) => {
+			event.preventDefault();
+
+			socket.emit('sendMessage', {text: $text.val(), name: $name.val()});
+
+			$text.val('');
+		});
+
+		socket.on('newMessage', (data) => {
+			$allMessages.append(`
+				<div class="alert alert-primary animate__animated  animate__rubberBand" role="alert">
+				<b>
+					`+ data.name +`
+				</b>:
+					`+ data.msg +`
+				</div>
+			`);
+		});
+
+		socket.on('online', (data) => {
+			console.log(data);
+			var online = document.getElementById('online');
+			online.innerHTML = `<b>`+ data +`</b>`
+		});
